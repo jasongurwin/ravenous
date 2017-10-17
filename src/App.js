@@ -12,7 +12,7 @@ class App extends Component {
   constructor(){
     super()
     this.state = {businesses: []}
-    this.searchYelp.bind(this);
+    this.searchYelp  = this.searchYelp.bind(this);
   }
 
     searchYelp(term,location,sortBy){

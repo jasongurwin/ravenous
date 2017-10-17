@@ -11,49 +11,38 @@ let Yelp = {
     if (accessToken){
       return new Promise(resolve =>
         resolve(accessToken));
+      } else {
+        return fetch(url, {method: 'POST'}).then(response=> { return response.json() }).then(jsonResponse => {accessToken=jsonResponse.access_token});
       }
-      return fetch(url, {method: 'POST'}).then(response=> { response.json() }).then(jsonResponse => {accessToken=jsonResponse.access_token});
     },
 
 
-  search(term,location,sortBy){
+    search(term,location,sortBy){
 
-    return Yelp.getAccessToken().then(() =>
-    {
-      return fetch(`https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`, {
-        headers: {Authorization: `Bearer ${accessToken}`}
-      }).then(jsonResponse=>{
-        if (jsonResponse.businesses) {
-          return jsonResponse.businesses.map(business =>
+      return Yelp.getAccessToken()
+          .then(() =>
+          {
+              return fetch(`https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`
+                  , {headers: {Authorization: `Bearer ${accessToken}`}});
+          }).then(jsonResponse => {
+              if (jsonResponse.businesses) {
+                  return jsonResponse.businesses.map(business => {
+                      return {
+                        id: business.id,
+                        imageSrc: business.image_url,
+                        name: business.name,
+                        address: business.location.address1,
+                        city: business.location.city,
+                        state: business.location.state,
+                        zipCode: business.location.zip_code,
+                        category: business.categories.title,
+                        rating: business.rating,
+                        reviewCount: business.review_count
+                      }; // end returning one business object
+                  }); // end map over businesses
+              } // end if response has businesses
+          }); // end response
+      } // end search function
+  };
 
-            {
-              id: business.id,
-              imageSrc: business.image_url,
-              name: business.name,
-              address: business.location.address1,
-              city: business.location.city,
-              state: business.location.state,
-              zipCode: business.location.zip_code,
-              category: business.categories.title,
-              rating: business.rating,
-              reviewCount: business.review_count
-
-            });
-
-          }
-        }
-
-          )
-        )}
-      });
-
-    })
-
-
-
-
-
-  }
-};
-
-export default Yelp
+  export default Yelp
