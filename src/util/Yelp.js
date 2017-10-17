@@ -24,7 +24,7 @@ let Yelp = {
         headers: {Authorization: `Bearer ${accessToken}`}
       }).then(jsonResponse=>{
         if (jsonResponse.businesses) {
-          return jsonResponse.businesses.map(business => (
+          return jsonResponse.businesses.map(business =>
 
             {
               id: business.id,
@@ -38,9 +38,10 @@ let Yelp = {
               rating: business.rating,
               reviewCount: business.review_count
 
-            }
+            });
 
-
+          }
+        }
 
           )
         )}
