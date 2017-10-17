@@ -16,7 +16,7 @@ let Yelp = {
     },
 
 
-  search(){
+  search(term,location,sortBy){
 
     return Yelp.getAccessToken().then(() =>
     {
